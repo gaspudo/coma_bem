@@ -15,10 +15,16 @@ class Avaliacao {
   int get idPrato => _idPrato;
 
   set ranking(int ranking) {
-    if (ranking < 1 || ranking > 5) {
-      throw ArgumentError('O ranking deve estar entre 1 e 5.');
+    if (ranking >= 1 && ranking <= 5) {
+      _ranking = ranking;
+      print("Nota $ranking salva com sucesso!");
+    } else if ( ranking > 5) {
+      _ranking = 5;
+      print("Aviso: A nota máxima permitida é 5.");
+    } else {
+      _ranking = 1;
+      print("Aviso: A nota mínima permitida é 1.");
     }
-    _ranking = ranking;
   }
 
   set recomendacao(String recomendacao) {

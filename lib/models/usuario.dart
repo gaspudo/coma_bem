@@ -20,6 +20,11 @@ class Usuario {
   }
 
   set senha(String senha) {
-    _senha = senha;
+    if ( senha.length < 6) {
+      print("Aviso: A senha deve ter mais que 6 caracteres.");
+    } else {
+      _senha = senha;
+      print("Senha salva com sucesso.");
+    }
   }
 }

@@ -29,4 +29,20 @@ class Restaurante {
   set tipoCulinaria(String tipoCulinaria) {
     _tipoCulinaria = tipoCulinaria;
   }
+
+  void exibirCategoriaCulinaria() {
+    switch (_tipoCulinaria.toLowerCase()) {
+      case 'japonesa':
+        print("Categoria: Culinária Asiática - Foco em peixes e arroz.");
+        break;
+      case 'italiana':
+        print("Categoria: Massas e Pizzas artesanais.");
+        break;
+      case 'brasileira':
+        print("Categoria: Churrasco, Feijoada e pratos típicos.");
+        break;
+      default:
+        print("Categoria: Culinária Internacional ou Diversa");
+    }
+  }
 }
