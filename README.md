@@ -31,4 +31,4 @@ erros (`try-catch`) e proteção contra injeção de SQL (`SQL Injection`).
 3. 3. Certifique-se de ter um Emulador Android configurado.
 4. 4. Execute o comando `flutter pub get` no terminal para baixar as dependências (`sqflite` e `path`).
 5. 5. Pressione `F5` para compilar e testar o aplicativo no emulador.
---- *Desenvolvido por João Gaspar*
+## *Desenvolvido por João Gaspar*
