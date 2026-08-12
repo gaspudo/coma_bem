@@ -121,4 +121,102 @@ class DatabaseHelper {
       where: '$colunaId = ?',
       whereArgs: [id]);
   }
+
+  Future<void> inserirRestaurante (Map<String, dynamic> dadosRestaurante) async {
+    try {
+      Database db = await bancoDeDados;
+      int idRestaurante = await db.insert('restaurante', dadosRestaurante);
+      print('Sucesso: Restaurante cadastrado com ID: $idRestaurante');
+    } catch (erro) {
+      print('Erro ao cadastrar restaurante: \$erro');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> listarRestaurantesPorTipo(String tipo) async {
+    try {
+      Database db = await bancoDeDados;
+      List<Map<String, dynamic>> ListaRestaurantes = await db.query(
+        'restaurante',
+        where: 'res_ds_tipo_culinaria = ?',
+        whereArgs: [tipo],
+      );
+      print('Sucesso: Foram encontrados \${ListaRestaurantes.length} restaurantes do tipo \$tipo');
+      return ListaRestaurantes;
+    } catch (erro) {
+      print('Erro ao buscar restaurantes: \$erro');
+      return [];
+    }
+  }
+
+  Future<void> atualizarAvaliacao(int idAvaliacao, int novaNota, String novaRecomendacao) async {
+    try {
+      Database db = await bancoDeDados;
+      int linhasAfetadas = await db.update(
+        'avaliacao',
+        {
+          'avl_nu_ranking': novaNota,
+          'avl_tx_recomendacao': novaRecomendacao,
+        },
+        where: 'avl_id_avaliacao = ?',
+        whereArgs: [idAvaliacao],
+      );
+      if (linhasAfetadas > 0) {
+        print('Sucesso: Avaliação atualizada com ID: $idAvaliacao');
+      } else {
+        print('Aviso: Nenhuma avaliação encontrada com ID: $idAvaliacao');
+      }
+    } catch (erro) {
+      print('Erro ao atualizar avaliação: \$erro');
+    }
+  }
+
+  Future<void> removerPrato (int idPrato) async {
+    try {
+      Database db = await bancoDeDados;
+      int linhasAfetadas = await db.delete(
+        'prato',
+        where: 'pra_id_prato = ?',
+        whereArgs: [idPrato],
+      );
+      if (linhasAfetadas > 0) {
+        print('Sucesso: Prato removido com ID: $idPrato');
+      } else {
+        print('Aviso: Nenhum prato encontrado com ID: $idPrato');
+      }
+    } catch (erro) {
+      print('Erro ao remover prato: \$erro');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> buscarRestaurantePorNome (String termoBusca) async {
+    try {
+      Database db = await bancoDeDados;
+      List<Map<String, dynamic>> ListaRestaurantes = await db.query(
+        'restaurante',
+        where: 'res_nm_restaurante LIKE ?',
+        whereArgs: ['%$termoBusca%'],
+      );
+      print('Sucesso: Foram encontrados \${ListaRestaurantes.length} restaurantes com o termo "\$termoBusca"');
+      return ListaRestaurantes;
+    } catch (erro) {
+      print('Erro ao buscar restaurante por nome: \$erro');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> buscarPratosPorRestaurante (int idRestaurante) async {
+    try {
+      Database db = await bancoDeDados;
+      List<Map<String, dynamic>> cardapio = await db.query(
+        'prato',
+        where: 'pra_id_restaurante = ?',
+        whereArgs: [idRestaurante],
+      );
+      print('Sucesso: Foram encontrados \${cardapio.length} pratos para o restaurante com ID: \$idRestaurante');
+      return cardapio;
+    } catch (erro) {
+      print('Erro ao carregar o cardápio: \$erro');
+      return [];
+    }
+  }
 }
