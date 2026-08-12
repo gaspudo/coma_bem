@@ -1,4 +1,4 @@
-class Usuario {
+abstract class Usuario {
   int _idUsuario;
   String _nomeUsuario;
   String _email;
@@ -27,4 +27,7 @@ class Usuario {
       print("Senha salva com sucesso.");
     }
   }
+
+  void exibirMenu();
+  void gerenciarConta();
 }
