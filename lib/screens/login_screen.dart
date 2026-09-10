@@ -1,31 +1,65 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
+import '../components/botao_customizado.dart';
+import '../components/campo_formulario_customizado.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
-  void _fazerLogin() async {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
-    var usuario = await DatabaseHelper().autenticarUsuario(username, password);
-
-    if (usuario.isEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } else {
+  Future<void> _fazerLogin() async {
+    if (_usernameController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Usuário ou senha inválidos')),
+        const SnackBar(content: Text('Preencha e-mail e senha.')),
       );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      var usuario = await DatabaseHelper().autenticarUsuario(
+        _usernameController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (!mounted) return; // checar mounted ANTES de usar context após await
+
+      if (usuario.isNotEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomeScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuário ou senha inválidos.')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro inesperado: $e')),
+      );
+    } finally {
+      // finally garante que o loading some mesmo se der exceção.
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -33,41 +67,39 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding (
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column (
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Bem-vindo!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
+            const SizedBox(height: 80),
+            const Text(
+              'Bem-vindo!',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30),
 
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
+            CampoFormularioCustomizado(
+              titulo: 'Email',
+              controlador: _usernameController,
+              tipoTeclado: TextInputType.emailAddress,
             ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Senha',
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true,
+            CampoFormularioCustomizado(
+              titulo: 'Senha',
+              controlador: _passwordController,
+              ocultarTexto: true,
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _fazerLogin,
-              child: Text('Entrar'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB25329)
-              ),
+            const SizedBox(height: 20),
+
+            BotaoCustomizado(
+              texto: 'Entrar',
+              aoPressed: _fazerLogin,
+              carregando: _isLoading,
+              corFundo: const Color(0xFFB25329),
             ),
-          ]
-        )
-      )
+          ],
+        ),
+      ),
     );
   }
 }
