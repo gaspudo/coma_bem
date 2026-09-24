@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../database/database_helper.dart';
+import '../database/memory_database.dart';
 import '../components/botao_customizado.dart';
 import '../components/campo_formulario_customizado.dart';
 import 'login_screen.dart';
-import '../utils/hash_util.dart';
 
 class CadastroUsuarioScreen extends StatefulWidget {
   const CadastroUsuarioScreen({super.key});
@@ -70,12 +69,12 @@ class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
       final dados = {
         'usu_nm_usuario': _nomeController.text.trim(),
         'usu_tx_email': _emailController.text.trim().toLowerCase(),
-        'usu_tx_senha': hashSenha(_senhaController.text),
+        'usu_tx_senha': (_senhaController.text),
       };
 
-      // inserirDados já existe no DatabaseHelper — reutilizamos sem criar método novo.
+      // inserirDados já existe no MemoryDatabase — reutilizamos sem criar método novo.
       // DRY aplicado na camada de dados também, não só na UI.
-      await DatabaseHelper().inserirDados('usuario', dados);
+      await MemoryDatabase().inserirDados('usuario', dados);
 
       if (!mounted) return;
 
@@ -95,9 +94,8 @@ class _CadastroUsuarioScreenState extends State<CadastroUsuarioScreen> {
     } on Exception catch (e) {
       if (!mounted) return;
 
-      // O SQLite lança exceção com "UNIQUE constraint failed" quando o e-mail
-      // já existe (definimos usu_tx_email como UNIQUE na tabela).
-      // Detectamos isso para dar uma mensagem útil ao usuário.
+      print('Erro ao criar conta: ${e.toString()}');
+
       final mensagem = e.toString().contains('UNIQUE')
           ? 'Este e-mail já está cadastrado.'
           : 'Erro ao criar conta. Tente novamente.';

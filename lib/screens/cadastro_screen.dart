@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:io';
-import '../database/database_helper.dart';
+import '../database/memory_database.dart';
 import '../components/botao_customizado.dart';
 import '../components/campo_formulario_customizado.dart';
 
@@ -107,7 +107,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
     };
 
     try {
-      await DatabaseHelper().inserirDados('restaurante', dadosRestaurante);
+      await MemoryDatabase().inserirDados('restaurante', dadosRestaurante);
 
       if (!mounted) return;
 

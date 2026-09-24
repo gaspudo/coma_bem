@@ -128,7 +128,7 @@ class DatabaseHelper {
       int idRestaurante = await db.insert('restaurante', dadosRestaurante);
       print('Sucesso: Restaurante cadastrado com ID: $idRestaurante');
     } catch (erro) {
-      print('Erro ao cadastrar restaurante: \$erro');
+      print('Erro ao cadastrar restaurante: $erro');
     }
   }
 
@@ -143,7 +143,7 @@ class DatabaseHelper {
       print('Sucesso: Foram encontrados \${ListaRestaurantes.length} restaurantes do tipo \$tipo');
       return ListaRestaurantes;
     } catch (erro) {
-      print('Erro ao buscar restaurantes: \$erro');
+      print('Erro ao buscar restaurantes: $erro');
       return [];
     }
   }
@@ -166,7 +166,7 @@ class DatabaseHelper {
         print('Aviso: Nenhuma avaliação encontrada com ID: $idAvaliacao');
       }
     } catch (erro) {
-      print('Erro ao atualizar avaliação: \$erro');
+      print('Erro ao atualizar avaliação: $erro');
     }
   }
 
@@ -184,7 +184,7 @@ class DatabaseHelper {
         print('Aviso: Nenhum prato encontrado com ID: $idPrato');
       }
     } catch (erro) {
-      print('Erro ao remover prato: \$erro');
+      print('Erro ao remover prato: $erro');
     }
   }
 
@@ -199,7 +199,7 @@ class DatabaseHelper {
       print('Sucesso: Foram encontrados \${ListaRestaurantes.length} restaurantes com o termo "\$termoBusca"');
       return ListaRestaurantes;
     } catch (erro) {
-      print('Erro ao buscar restaurante por nome: \$erro');
+      print('Erro ao buscar restaurante por nome: $erro');
       return [];
     }
   }

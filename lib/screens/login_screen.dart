@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../database/database_helper.dart';
+import '../database/memory_database.dart';
 import '../components/botao_customizado.dart';
 import '../components/campo_formulario_customizado.dart';
-import '../utils/hash_util.dart';
 import 'home_screen.dart';
 import 'usuario_cadastro_screen.dart';
 
@@ -38,9 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
 
-      final usuario = await DatabaseHelper().autenticarUsuario(
+      final usuario = await MemoryDatabase().autenticarUsuario(
         _emailController.text.trim().toLowerCase(),
-        hashSenha(_senhaController.text),
+        _senhaController.text,
       );
 
       if (!mounted) return;
@@ -86,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
               titulo: 'E-mail',
               controlador: _emailController,
               tipoTeclado: TextInputType.emailAddress,
-            ),
+            ), 
             CampoFormularioCustomizado(
               titulo: 'Senha',
               controlador: _senhaController,
